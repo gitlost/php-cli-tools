@@ -38,7 +38,7 @@ class Shell {
 					}
 				}
 			} else if (!preg_match('/(^|,)(\s*)?exec(\s*)?(,|$)/', ini_get('disable_functions'))) {
-				$columns = (int) exec('/usr/bin/env tput cols 2>/dev/null');
+				$columns = (int) exec( '/usr/bin/env tput cols 2>/dev/null' );
 			}
 
 			if ( !$columns ) {
