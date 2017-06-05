@@ -21,17 +21,22 @@ class Shell {
 	/**
 	 * Returns the number of columns the current shell has for display.
 	 *
+	 * @param mixed $reset For testing only. If not null will recheck columns.
+	 *
 	 * @return int  The number of columns.
 	 * @todo Test on more systems.
 	 */
-	static public function columns() {
+	static public function columns( $reset = null ) {
 		static $columns;
 
+		if ( null !== $reset ) {
+			$columns = null;
+		}
 		if ( null === $columns ) {
 			if ( function_exists( 'exec' ) ) {
-				if ( self::is_windows() ) {
+				if ( self::is_windows() || 'WIN' === $reset ) {
 					// Cater for shells such as Cygwin and Git bash where `mode CON` returns an incorrect value for columns.
-					if ( ( $shell = getenv( 'SHELL' ) ) && preg_match( '/bash(?:.exe)?$/', $shell ) && getenv( 'TERM' ) ) {
+					if ( ( $shell = getenv( 'SHELL' ) ) && preg_match( '/(?:bash|zsh)(?:.exe)?$/', $shell ) && getenv( 'TERM' ) ) {
 						$columns = (int) exec( 'tput cols' );
 					}
 					if ( ! $columns ) {
