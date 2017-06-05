@@ -52,11 +52,7 @@ class Shell {
 					}
 				} else {
 					if ( getenv( 'TERM' ) ) {
-						$cmd = 'tput cols';
-						if ( is_executable( '/usr/bin/env' ) ) {
-							$cmd = '/usr/bin/env ' . $cmd;
-						}
-						$columns = (int) exec( $cmd );
+						$columns = (int) exec( '/usr/bin/env tput cols' );
 					}
 				}
 			}
