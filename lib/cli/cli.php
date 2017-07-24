@@ -181,9 +181,23 @@ function safe_strlen( $str ) {
  * @param  boolean $length  Maximum length of the substring
  * @return string           Substring of string specified by start and length parameters
  */
-function safe_substr( $str, $start, $length = false ) {
+function safe_substr( $str, $start, $length = false, $width = false ) {
 	if ( function_exists( 'mb_substr' ) && function_exists( 'mb_detect_encoding' ) ) {
-		$substr = mb_substr( $str, $start, $length, mb_detect_encoding( $str ) );
+		$encoding = mb_detect_encoding( $str );
+		if ( $length && $width && 'UTF-8' === $encoding ) {
+			static $eaw_regex; // East Asian Width regex. Characters that count as 2 characters as they're "wide" or "fullwidth". See http://www.unicode.org/reports/tr11/tr11-19.html
+			if ( null === $eaw_regex ) {
+				// Load both regexs generated from Unicode data.
+				require __DIR__ . '/unicode/regex.php';
+			}
+			$cnt = preg_match_all( '/[\x00-\x7f\xc2-\xf4][^\x00-\x7f\xc2-\xf4]*/', $str, $matches );
+			$width = $length;
+
+			for ( $length = 0; $length < $cnt && $width > 0; $length++ ) {
+				$width -= preg_match( $eaw_regex, $matches[0][ $length ] ) ? 2 : 1;
+			}
+		}
+		$substr = mb_substr( $str, $start, $length, $encoding );
 	} else {
 		// iconv will return PHP notice if non-ascii characters are present in input string
 		$str = iconv( 'ASCII' , 'ASCII', $str );

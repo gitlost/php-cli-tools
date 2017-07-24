@@ -135,15 +135,15 @@ class Ascii extends Renderer {
 				$col_width = $this->_widths[ $col ];
 				$original_val_width = Colors::shouldColorize() ? Colors::width( $value ) : \cli\strwidth( $value );
 				if ( $original_val_width > $col_width ) {
-					$row[ $col ] = \cli\safe_substr( $value, 0, $col_width );
-					$value = \cli\safe_substr( $value, $col_width, $original_val_width );
+					$row[ $col ] = \cli\safe_substr( $value, 0, $col_width, true /*width*/ );
+					$value = \cli\safe_substr( $value, \cli\safe_strlen( $row[ $col ] ), null );
 					$i = 0;
 					do {
-						$extra_value = \cli\safe_substr( $value, 0, $col_width );
+						$extra_value = \cli\safe_substr( $value, 0, $col_width, true /*width*/ );
 						$val_width = \cli\strwidth( $extra_value );
 						if ( $val_width ) {
 							$extra_rows[ $col ][] = $extra_value;
-							$value = \cli\safe_substr( $value, $col_width, $original_val_width );
+							$value = \cli\safe_substr( $value, \cli\safe_strlen( $extra_value ), null );
 							$i++;
 							if ( $i > $extra_row_count ) {
 								$extra_row_count = $i;
