@@ -34,7 +34,6 @@ class Test_Table extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( $constraint_width, strlen( $out[10] ) );
 		$this->assertEquals( $constraint_width, strlen( $out[11] ) );
 
-		/*
 		$constraint_width = 81;
 
 		$renderer = new cli\Table\Ascii;
@@ -45,12 +44,10 @@ class Test_Table extends PHPUnit_Framework_TestCase {
 		for ( $i = 0; $i < count( $out ); $i++ ) {
 			$this->assertEquals( $constraint_width, strlen( $out[ $i ] ) );
 		}
-		*/
 	}
 
 	public function test_column_value_too_long_with_multibytes() {
 
-		/*
 		$constraint_width = 80;
 
 		$table = new cli\Table;
@@ -76,7 +73,6 @@ class Test_Table extends PHPUnit_Framework_TestCase {
 		for ( $i = 0; $i < count( $out ); $i++ ) {
 			$this->assertEquals( $constraint_width, \cli\strwidth( $out[$i] ) );
 		}
-		*/
 		$this->assertTrue( true );
 	}
 
