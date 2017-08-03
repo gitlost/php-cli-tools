@@ -10,7 +10,7 @@ before_script:
   - php -m
   - php --info | grep -i 'intl\|pcre'
 
-script: phpunit
+script: phpunit --debug
 
 notifications:
     email:
