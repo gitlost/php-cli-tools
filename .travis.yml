@@ -9,6 +9,7 @@ php:
     - 5.6
     - 7.0
     - 7.1
+    - 7.2
 
 matrix:
   include:
@@ -17,9 +18,11 @@ matrix:
 
 before_script:
   - php -m
-  - php --info | grep -i 'intl\|icu\|pcre'
+  - php --ri intl
+  - php --ri icu
+  - php --ri pcre
 
-script: phpunit --debug
+script: vendor/bin/phpunit --debug
 
 notifications:
     email:

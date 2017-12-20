@@ -16,6 +16,12 @@ class Test_Table_Ascii extends PHPUnit_Framework_TestCase {
 	 * @var string Path to temporary file, where STDOUT output will be redirected during tests
 	 */
 	private $_mockFile;
+
+	/**
+	 * @var resource File pointer to temporary file.
+	 */
+	private $_resource;
+
 	/**
 	 * @var \cli\Table Instance
 	 */
@@ -26,8 +32,8 @@ class Test_Table_Ascii extends PHPUnit_Framework_TestCase {
 	 */
 	public function setUp() {
 		$this->_mockFile = tempnam(sys_get_temp_dir(), 'temp');
-		$resource = fopen($this->_mockFile, 'wb');
-		Streams::setStream('out', $resource);
+		$this->_resource = fopen( $this->_mockFile, 'wb' );
+		Streams::setStream( 'out', $this->_resource, true /*own_close*/ );
 
 		$this->_instance = new Table();
 		$this->_instance->setRenderer(new Ascii());
@@ -37,6 +43,9 @@ class Test_Table_Ascii extends PHPUnit_Framework_TestCase {
 	 * Cleans temporary file
 	 */
 	public function tearDown() {
+		if ( $this->_resource ) {
+			fclose( $this->_resource );
+		}
 		if (file_exists($this->_mockFile)) {
 			unlink($this->_mockFile);
 		}
@@ -274,6 +283,6 @@ OUT;
 	 * @param mixed $expected Expected output
 	 */
 	private function assertOutFileEqualsWith($expected) {
-		$this->assertEquals($expected, file_get_contents($this->_mockFile));
+		$this->assertEquals( cli\normalize_eols( $expected ), file_get_contents( $this->_mockFile ) );
 	}
 }

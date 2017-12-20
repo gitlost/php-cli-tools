@@ -14,7 +14,8 @@ class Streams {
 	}
 
 	static public function isTty() {
-		return (function_exists('posix_isatty') && posix_isatty(static::$out));
+		// Use Shell version so `SHELL_PIPE` environment variable is respected.
+		return ! Shell::isPiped();
 	}
 
 	/**
@@ -257,23 +258,26 @@ class Streams {
 	 *    - 'err'  (default: STDERR)
 	 *
 	 * Any custom streams will be closed for you on shutdown, so please don't close stream
-	 * resources used with this method.
+	 * resources used with this method, unless you set `$own_close`.
 	 *
 	 * @param string    $whichStream  The stream property to update
 	 * @param resource  $stream       The new stream resource to use
+	 * @param bool      $own_close    Optional. If set, stream won't be closed on shutdown. Default false.
 	 * @return void
 	 * @throws \Exception Thrown if $stream is not a resource of the 'stream' type.
 	 */
-	public static function setStream( $whichStream, $stream ) {
+	public static function setStream( $whichStream, $stream, $own_close = false ) {
 		if( !is_resource( $stream ) || get_resource_type( $stream ) !== 'stream' ) {
 			throw new \Exception( 'Invalid resource type!' );
 		}
 		if( property_exists( __CLASS__, $whichStream ) ) {
 			static::${$whichStream} = $stream;
 		}
-		register_shutdown_function( function() use ($stream) {
-			fclose( $stream );
-		} );
+		if ( ! $own_close ) {
+			register_shutdown_function( function() use ($stream) {
+				fclose( $stream );
+			} );
+		}
 	}
 
 }

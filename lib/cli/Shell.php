@@ -31,25 +31,25 @@ class Shell {
 			$columns = null;
 		}
 		if ( null === $columns ) {
-			if ( function_exists( 'exec' ) ) {
-				if ( self::is_windows() ) {
-					// Cater for shells such as Cygwin and Git bash where `mode CON` returns an incorrect value for columns.
-					if ( ( $shell = getenv( 'SHELL' ) ) && preg_match( '/(?:bash|zsh)(?:\.exe)?$/', $shell ) && getenv( 'TERM' ) ) {
-						$columns = (int) exec( 'tput cols' );
-					}
-					if ( ! $columns ) {
-						$return_var = -1;
-						$output = array();
-						exec( 'mode CON', $output, $return_var );
-						if ( 0 === $return_var && $output ) {
-							// Look for second line ending in ": <number>" (searching for "Columns:" will fail on non-English locales).
-							if ( preg_match( '/:\s*[0-9]+\n[^:]+:\s*([0-9]+)\n/', implode( "\n", $output ), $matches ) ) {
-								$columns = (int) $matches[1];
+			if ( ! ( $columns = (int) getenv( 'COLUMNS' ) ) ) {
+				if ( function_exists( 'exec' ) ) {
+					if ( self::is_windows() ) {
+						// Cater for shells such as Cygwin and Git bash where `mode CON` returns an incorrect value for columns.
+						if ( self::is_bashlike() && getenv( 'TERM' ) ) {
+							$columns = (int) exec( 'tput cols' );
+						}
+						if ( ! $columns ) {
+							$return_var = -1;
+							$output = array();
+							exec( 'mode CON', $output, $return_var );
+							if ( 0 === $return_var && $output ) {
+								// Look for second line ending in ": <number>" (searching for "Columns:" will fail on non-English locales).
+								if ( preg_match( '/:\s*[0-9]+\n[^:]+:\s*([0-9]+)\n/', implode( "\n", $output ), $matches ) ) {
+									$columns = (int) $matches[1];
+								}
 							}
 						}
-					}
-				} else {
-					if ( ! ( $columns = (int) getenv( 'COLUMNS' ) ) ) {
+					} else {
 						$size = exec( '/usr/bin/env stty size 2>/dev/null' );
 						if ( '' !== $size && preg_match( '/[0-9]+ ([0-9]+)/', $size, $matches ) ) {
 							$columns = (int) $matches[1];
@@ -104,14 +104,21 @@ class Shell {
 	}
 
 	/**
+	 * Is the shell bash-like (bash or zsh)? Useful to tell if running on Cygwin or Git bash under Windows.
+	 *
+	 * @return bool
+	 */
+	static public function is_bashlike() {
+		return ( $shell = getenv( 'SHELL' ) ) && preg_match( '/(?:bash|zsh)(?:\.exe)?$/', $shell );
+	}
+
+	/**
 	 * Is this shell in Windows?
 	 *
 	 * @return bool
 	 */
 	static private function is_windows() {
-		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+		return '\\' === DIRECTORY_SEPARATOR;
 	}
 
 }
-
-?>

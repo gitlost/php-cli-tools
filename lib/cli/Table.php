@@ -150,7 +150,7 @@ class Table {
 
 		foreach ($this->_rows as $row) {
 			$row = $this->_renderer->row($row);
-			$row = explode( PHP_EOL, $row );
+			$row = explode( "\n", normalize_eols( $row ) );
 			$out = array_merge( $out, $row );
 		}
 
