@@ -90,7 +90,7 @@ class Test_Table extends PHPUnit_Framework_TestCase {
 
 		// 1 single-width, 6 double-width, 1 single-width, 2 double-width, 1 half-width, 2 double-width.
 		$out = $renderer->row( array( '1あいうえおか2きくｶけこ' ) );
-		$result = $strip_borders( explode( "\n", $out ) );
+		$result = $strip_borders( explode( "\n", cli\normalize_eols( $out ) ) );
 
 		$this->assertSame( 3, count( $result ) );
 		$this->assertSame( '1あいうえ ', $result[0] ); // 1 single width, 4 double-width, space = 10.
@@ -102,7 +102,7 @@ class Test_Table extends PHPUnit_Framework_TestCase {
 		$renderer->setWidths( array( 1 ) );
 
 		$out = $renderer->row( array( '1あいうえおか2きくｶけこ' ) );
-		$result = $strip_borders( explode( "\n", $out ) );
+		$result = $strip_borders( explode( "\n", cli\normalize_eols( $out ) ) );
 
 		$this->assertSame( 13, count( $result ) );
 		// Uneven rows.
@@ -114,7 +114,7 @@ class Test_Table extends PHPUnit_Framework_TestCase {
 		$renderer->setWidths( array( 0 ) );
 
 		$out = $renderer->row( array( '1あいうえおか2きくｶけこ' ) );
-		$result = $strip_borders( explode( "\n", $out ) );
+		$result = $strip_borders( explode( "\n", cli\normalize_eols( $out ) ) );
 
 		$this->assertSame( 1, count( $result ) );
 	}

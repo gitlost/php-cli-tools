@@ -550,4 +550,12 @@ class testsCli extends PHPUnit_Framework_TestCase {
 			mb_detect_order( $mb_detect_order );
 		}
 	}
+
+	function test_normalize_eols() {
+		$this->assertSame( "blah\n", \cli\normalize_eols( "blah\r\n" ) );
+		$this->assertSame( "blah\nblah\nblah\n", \cli\normalize_eols( "blah\r\nblah\r\nblah\r\n" ) );
+		$this->assertSame( "blah\nblah\nblah\n", \cli\normalize_eols( "blah\r\nblah\nblah\r\n" ) );
+		$this->assertSame( "blah\rblah\nblah\n", \cli\normalize_eols( "blah\rblah\r\nblah\r\n" ) );
+		$this->assertSame( "blah\r\nblah\nblah\n", \cli\normalize_eols( "blah\r\r\nblah\r\nblah\r\n" ) );
+	}
 }

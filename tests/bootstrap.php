@@ -1,6 +1,8 @@
 <?php
 
-require dirname( dirname( __FILE__ ) ) . '/lib/cli/cli.php';
+if ( ! function_exists( '\cli\render' ) ) {
+	require dirname( dirname( __FILE__ ) ) . '/lib/cli/cli.php';
+}
 
 /**
  * Compatibility with PHPUnit 6+

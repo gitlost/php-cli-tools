@@ -131,7 +131,7 @@ class Ascii extends Renderer {
 
 			foreach( $row as $col => $value ) {
 
-				$value = str_replace( array( "\r\n", "\n" ), ' ', $value );
+				$value = str_replace( "\n", ' ', \cli\normalize_eols( $value ) );
 
 				$col_width = $this->_widths[ $col ];
 				$encoding = function_exists( 'mb_detect_encoding' ) ? mb_detect_encoding( $value, null, true /*strict*/ ) : false;

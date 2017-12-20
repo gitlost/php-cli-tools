@@ -413,3 +413,13 @@ function get_unicode_regexs( $idx = null ) {
 
 	return array( $eaw_regex, $m_regex, );
 }
+
+/**
+ * Convert Windows EOLs to *nix.
+ *
+ * @param string $str String to convert.
+ * @return string String with carriage return / newline pairs reduced to newlines.
+ */
+function normalize_eols( $str ) {
+	return str_replace( "\r\n", "\n", $str );
+}
