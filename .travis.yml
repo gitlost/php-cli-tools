@@ -18,9 +18,7 @@ matrix:
 
 before_script:
   - php -m
-  - php --ri intl
-  - php --ri icu
-  - php --ri pcre
+  - php --info | grep -i 'intl\|icu\|pcre'
 
 script: vendor/bin/phpunit --debug
 
