@@ -27,7 +27,7 @@ install:
   - cInst webpicommandline -y
   - WebPICMD /Install /Products:"PHP70" /AcceptEULA
 
-  # Install Composer
+  # Install Composer.
   - ps: mkdir C:\projects\php-cli-tools-bin -Force
   - cd C:\projects\php-cli-tools-bin
   - ps: Invoke-WebRequest https://getcomposer.org/composer.phar -Outfile composer.phar
