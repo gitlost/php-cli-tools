@@ -19,6 +19,7 @@ matrix:
 before_script:
   - php -m
   - php --info | grep -i 'intl\|icu\|pcre'
+  - echo $COLUMNS
   - composer install --no-interaction --prefer-source
 
 script: vendor/bin/phpunit
